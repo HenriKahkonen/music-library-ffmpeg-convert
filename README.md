@@ -4,7 +4,7 @@ This script is to be used to non-destructively mass-convert a music library into
 
 Script reads a directory recursively, identifies audio files and converts them into the desired container.
 
-# Setup and dependencies
+## Setup and dependencies
 
 This script is written using python 3.13.12. Some dependencies need to be installed for the conversion operations to work.
 
@@ -25,7 +25,7 @@ pip3 install -r requirements.txt
 ### Set up your source and target files as well as your target file format
 In the project's root folder is a file called _.env-example_. Create a file in the same root folder called _.env_ and copy the example envs contents to it, substituting the folders with your own.
 
-# Using the tool
+## Using the tool
 
 After the variables have been set, run the script with:
 
