@@ -1,6 +1,5 @@
-import sys, argparse, time, json, os, math
+import sys, json, os, math
 from datetime import datetime
-import ffmpeg
 import utils.exceptions as excepts
 from dotenv import dotenv_values
 from pathlib import Path
@@ -10,16 +9,7 @@ from utils.constants import ffmpeg_audiocontainers
 
 def main(argv: list[str]) -> int:
 
-    parser = argparse.ArgumentParser(description="Music Library ffmpeg converter")
-    parser.add_argument("--log",action="store_true",help="Use argument to log operations to .txt output")
-    args = parser.parse_args(argv[1:])
-
     print("\n"+"="*25+"Music library converter tool"+"="*25+"\n")
-
-    logging = args.log
-    if logging:
-        print("Logging: True")
-        #TODO: implement logging
     
     #  ================
     #  Pre-operation validations

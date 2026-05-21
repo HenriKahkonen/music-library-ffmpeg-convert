@@ -31,10 +31,6 @@ After the variables have been set, run the script with:
 
 > python3 main.py
 
-If you want to output a .txt log of the actions, add flag --log and run the command as:
-
-> python3 main.py --log
-
 The script then starts to read through the target directory. If it encounters files already in the desired file format, it copies the files into the target directory. If a file with a matching filename exists in the target directory, source file is not copied, meaning you can run the script multiple times without flooding your disk with duplicate files.
 
 Whenever the script encounters audio files that are not in the desired output format, the file is converted to the target format using the ffmpeg library and copied to the target folder using same duplicate prevention logic as above.
