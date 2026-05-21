@@ -41,6 +41,8 @@ def main(argv: list[str]) -> int:
             raise excepts.InvalidDirectoryException(f"Source directory \"{sourcedir}\" is not a valid path.")
         if (not os.path.isdir(targetdir)):
             raise excepts.InvalidDirectoryException(f"Target directory \"{targetdir}\" is not a valid path. Create an empty target directory before running the script.")
+        if sourcedir == targetdir:
+            raise excepts.InvalidDirectoryException(f"Target and source directories cannot be the same path.")
         
         if (targetcontainer not in ffmpeg_audiocontainers):
             raise excepts.InvalidFileFormatException(f"Target file format \"{targetcontainer}\" is not an audio file format supported by ffmpeg.")
