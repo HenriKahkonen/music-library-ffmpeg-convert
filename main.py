@@ -4,7 +4,7 @@ import utils.exceptions as excepts
 from dotenv import dotenv_values
 from pathlib import Path
 
-from utils.funcs import isAudioFile, getExtension, calculateNewAverage, copyFileToTarget, transcodeAudioToTarget
+from utils.funcs import isAudioFile, getExtension, copyFileToTarget, transcodeAudioToTarget
 from utils.constants import ffmpeg_audiocontainers
 
 def main(argv: list[str]) -> int:
@@ -102,21 +102,23 @@ def main(argv: list[str]) -> int:
             didoperation = transcodeAudioToTarget(fullpath,targetpath,targetcontainer)
             conversiontime = (datetime.now() - conversionstartTime).microseconds
             if didoperation:
+                valuestotalestimate = (averagefileconversionlength*filesconverted)+conversiontime
                 filesconverted += 1
-                averagefileconversionlength = calculateNewAverage(averagefileconversionlength,filesconverted,conversiontime)
+                averagefileconversionlength = valuestotalestimate / filesconverted
 
             remainingconversions -= 1
-
             if filesconverted > 0 and filesconverted%fileintervaltoprint==0:
                 conversiontimethusfar = (datetime.now() - timetostartfullprocess).seconds
-                estimatedremainingmicroseconds = remainingconversions*averagefileconversionlength
+                estimatedremainingseconds = math.floor(remainingconversions*averagefileconversionlength/1000000)
                 percentageready = round(float(100-(remainingconversions/audiofilestoconvert*100)),2)
-                print(f"Converted {percentageready}% of files in {round(float(conversiontimethusfar/60),2)} minutes. Estimated time remaining: {round(float(estimatedremainingmicroseconds/1000000/60),2)} minutes.")
+                minutesremaining = math.floor(estimatedremainingseconds/60)
+                secondsremaining = estimatedremainingseconds % 60
+                print(f"Converted {percentageready}% of files in {round(float(conversiontimethusfar/60),2)} minutes. Estimated time remaining: {minutesremaining} min {secondsremaining} sec.")
 
     timeforfullprocess = (datetime.now() - timetostartfullprocess).seconds 
-    hours = timeforfullprocess / 3600
+    hours = math.floor(timeforfullprocess / 3600)
     hoursremainder = timeforfullprocess % 3600
-    minutes = hoursremainder / 60
+    minutes = math.floor(hoursremainder / 60)
     seconds = hoursremainder % 60
     print(f"Library converted in {hours} hours, {minutes} minutes and {seconds} seconds.")
 

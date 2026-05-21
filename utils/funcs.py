@@ -15,10 +15,7 @@ def getExtension(filename:str) -> str:
     """Returns the file extension of file"""
     return Path(filename).suffix
 
-def calculateNewAverage(oldaverage, instances, newvalue):
-    oldvaluestotal = oldaverage*instances
-    newvaluestotal = oldvaluestotal + newvalue
-    return newvaluestotal / (instances+1)
+
 
 def copyFileToTarget(sourcepath:str, targetpath:str):
     """_summary_
