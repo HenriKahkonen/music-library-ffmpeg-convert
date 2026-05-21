@@ -38,6 +38,19 @@ def copyFileToTarget(sourcepath:str, targetpath:str):
             raise IOError
         
 def transcodeAudioToTarget(inputpath:str,outputpath:str,targetcontainer:str):
+    """_summary_
+
+    Args:
+        inputpath (str): full path of input file
+        outputpath (str): full path of output file
+        targetcontainer (str): for example '.mp3'
+
+    Raises:
+        TypeError: If transcoding to a container not currently supported
+
+    Returns:
+        bool: True or False depending on whether file was transcoded
+    """
 
     supportedContainers = [".mp3"]
     if targetcontainer not in supportedContainers:
@@ -45,6 +58,10 @@ def transcodeAudioToTarget(inputpath:str,outputpath:str,targetcontainer:str):
     
     sourcecontainer = Path(inputpath).suffix
     output = outputpath.replace(sourcecontainer,targetcontainer)
+
+    # Skip transcoding if output file already exists
+    if os.path.isfile(output):
+        return False
     
     # Convert to .mp3
     if targetcontainer == ".mp3":
@@ -60,3 +77,5 @@ def transcodeAudioToTarget(inputpath:str,outputpath:str,targetcontainer:str):
         )
 
         ffmpeg.execute()
+
+        return True

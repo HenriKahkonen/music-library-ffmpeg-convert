@@ -55,6 +55,7 @@ def main(argv: list[str]) -> int:
                     if getExtension(file) == targetcontainer:
                         audiofilestomove+=1
                     else:
+
                         audiofilestoconvert+=1
         if audiofilestoconvert+audiofilestomove==0:
             raise excepts.InvalidDirectoryException(f"Directory \"{sourcedir}\" doesn't contain any audio files!")
@@ -66,7 +67,7 @@ def main(argv: list[str]) -> int:
     print(".env values validated.")
     print(f"Found a total of {audiofilestoconvert+audiofilestomove} audio files, {audiofilestomove} of which are already in the desired target format.")
     timedelta = datetime.now() - timetostartpreparations
-    print(f"Preparations took {round(timedelta.microseconds/1000000,2)} seconds.\n")
+    print(f"Preparations took {round(timedelta.microseconds/1000000,5)} seconds.\n")
         
     # =====================
     # File conversion loop
@@ -76,8 +77,9 @@ def main(argv: list[str]) -> int:
 
     timetostartfullprocess = datetime.now()
     fileintervaltoprint = math.ceil(int(audiofilestoconvert/100)) # Give 100 status updates to the user during the process
-    filesconverted = 0
+    filesconverted = 0 
     averagefileconversionlength = 0 
+    remainingconversions = audiofilestoconvert
 
     for (sourcepath, dirs, files) in os.walk(sourcedir):
 
@@ -96,6 +98,10 @@ def main(argv: list[str]) -> int:
             raise
 
         for file in files:
+
+            if file.startswith("."):
+                continue
+
             fullpath = os.path.join(sourcepath,file)
             targetpath = fullpath.replace(sourcedir,targetdir)
             if not isAudioFile(file) or getExtension(file) == targetcontainer:
@@ -103,19 +109,26 @@ def main(argv: list[str]) -> int:
                 continue
 
             conversionstartTime = datetime.now()
-
-            transcodeAudioToTarget(fullpath,targetpath,targetcontainer)
-
+            didoperation = transcodeAudioToTarget(fullpath,targetpath,targetcontainer)
             conversiontime = (datetime.now() - conversionstartTime).microseconds
-            filesconverted += 1
-            averagefileconversionlength = calculateNewAverage(averagefileconversionlength,filesconverted,conversiontime)
+            if didoperation:
+                filesconverted += 1
+                averagefileconversionlength = calculateNewAverage(averagefileconversionlength,filesconverted,conversiontime)
+
+            remainingconversions -= 1
 
             if filesconverted > 0 and filesconverted%fileintervaltoprint==0:
                 conversiontimethusfar = (datetime.now() - timetostartfullprocess).seconds
-                remainingconversions = audiofilestoconvert - filesconverted
                 estimatedremainingmicroseconds = remainingconversions*averagefileconversionlength
-                percentageready = round(float(filesconverted/audiofilestoconvert*100),2)
+                percentageready = round(float(100-(remainingconversions/audiofilestoconvert*100)),2)
                 print(f"Converted {percentageready}% of files in {round(float(conversiontimethusfar/60),2)} minutes. Estimated time remaining: {round(float(estimatedremainingmicroseconds/1000000/60),2)} minutes.")
+
+    timeforfullprocess = (datetime.now() - timetostartfullprocess).seconds 
+    hours = timeforfullprocess / 3600
+    hoursremainder = timeforfullprocess % 3600
+    minutes = hoursremainder / 60
+    seconds = hoursremainder % 60
+    print(f"Library converted in {hours} hours, {minutes} minutes and {seconds} seconds.")
 
 if __name__ == "__main__" :
     main(sys.argv)
