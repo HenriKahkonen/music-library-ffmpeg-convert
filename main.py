@@ -5,7 +5,7 @@ import utils.exceptions as excepts
 from dotenv import dotenv_values
 from pathlib import Path
 
-from utils.funcs import isAudioFile, getExtension, calculateNewAverage, copyFileToTarget
+from utils.funcs import isAudioFile, getExtension, calculateNewAverage, copyFileToTarget, transcodeAudioToTarget
 from utils.constants import ffmpeg_audiocontainers
 
 def main(argv: list[str]) -> int:
@@ -66,7 +66,7 @@ def main(argv: list[str]) -> int:
     print(".env values validated.")
     print(f"Found a total of {audiofilestoconvert+audiofilestomove} audio files, {audiofilestomove} of which are already in the desired target format.")
     timedelta = datetime.now() - timetostartpreparations
-    print(f"Preparations took {timedelta.microseconds/1000000} seconds.\n")
+    print(f"Preparations took {round(timedelta.microseconds/1000000,2)} seconds.\n")
         
     # =====================
     # File conversion loop
@@ -103,7 +103,9 @@ def main(argv: list[str]) -> int:
                 continue
 
             conversionstartTime = datetime.now()
-            #convert and copy to target
+
+            transcodeAudioToTarget(fullpath,targetpath,targetcontainer)
+
             conversiontime = (datetime.now() - conversionstartTime).microseconds
             filesconverted += 1
             averagefileconversionlength = calculateNewAverage(averagefileconversionlength,filesconverted,conversiontime)
@@ -112,10 +114,8 @@ def main(argv: list[str]) -> int:
                 conversiontimethusfar = (datetime.now() - timetostartfullprocess).seconds
                 remainingconversions = audiofilestoconvert - filesconverted
                 estimatedremainingmicroseconds = remainingconversions*averagefileconversionlength
-                percentageready = float(filesconverted/audiofilestoconvert)
-                print(f"Converted {percentageready}% of files in {float(conversiontimethusfar/60)} minutes. Estimated time remaining: {float(estimatedremainingmicroseconds/1000000/60)} minutes.")
-
-                
+                percentageready = round(float(filesconverted/audiofilestoconvert*100),2)
+                print(f"Converted {percentageready}% of files in {round(float(conversiontimethusfar/60),2)} minutes. Estimated time remaining: {round(float(estimatedremainingmicroseconds/1000000/60),2)} minutes.")
 
 if __name__ == "__main__" :
     main(sys.argv)
