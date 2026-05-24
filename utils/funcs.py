@@ -62,17 +62,20 @@ def transcodeAudioToTarget(inputpath:str,outputpath:str,targetcontainer:str):
     
     # Convert to .mp3
     if targetcontainer == ".mp3":
-
-        ffmpeg = (
-            FFmpeg()
-            .option("y")
-            .input(inputpath)
-            .output(
-                output,
-                {"codec:a": "libmp3lame"},
+        try:
+            ffmpeg = (
+                FFmpeg()
+                .option("y")
+                .input(inputpath)
+                .output(
+                    output,
+                    {"codec:a": "libmp3lame"},
+                )
             )
-        )
 
-        ffmpeg.execute()
+            ffmpeg.execute()
 
-        return True
+            return True
+        except Exception as e:
+            print(f"Error when trying to convert file at {inputpath}: {e}")
+            return False
