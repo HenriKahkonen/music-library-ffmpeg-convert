@@ -76,6 +76,9 @@ def transcodeAudioToTarget(inputpath:str,outputpath:str,targetcontainer:str):
             ffmpeg.execute()
 
             return True
+        except FileNotFoundError as e:
+            print(f"Error when trying to convert file at {inputpath}: {e}. This can be raised if Windows can't find ffmpeg when converting files. Is ffmpeg installed and configured in your path?")
+            return False
         except Exception as e:
             print(f"Error when trying to convert file at {inputpath}: {e}")
             return False

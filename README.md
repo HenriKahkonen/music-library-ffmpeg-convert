@@ -25,6 +25,10 @@ pip3 install -r requirements.txt
 ### Set up your source and target files as well as your target file format
 In the project's root folder is a file called _.env-example_. Create a file in the same root folder called _.env_ and copy the example envs contents to it, substituting the folders with your own.
 
+### Make sure you have ffmpeg installed on your machine
+
+Script depends on ffmpeg, so make sure it is installed and, if using Windows, ffmpeg is added to Windows environment variables. For Windows, check guide to ffmpeg installation [here](https://windowsloop.com/install-ffmpeg-windows-10/). 
+
 ## Using the tool
 
 After the variables have been set, run the script with:
