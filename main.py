@@ -7,7 +7,7 @@ from pathlib import Path
 from utils.funcs import isAudioFile, getExtension, copyFileToTarget, transcodeAudioToTarget
 from utils.constants import ffmpeg_audiocontainers
 
-def main(argv: list[str]) -> int:
+def main(argv: list[str]):
 
     print("\n"+"="*25+"Music library converter tool"+"="*25+"\n")
     
@@ -121,6 +121,7 @@ def main(argv: list[str]) -> int:
     minutes = math.floor(hoursremainder / 60)
     seconds = hoursremainder % 60
     print(f"Library converted in {hours} hours, {minutes} minutes and {seconds} seconds.")
+    raise SystemExit(0)
 
 if __name__ == "__main__" :
     main(sys.argv)
